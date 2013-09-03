@@ -1,0 +1,31 @@
+---
+- hosts: vagrant
+  sudo: yes
+  tasks:
+    - name: ensure default packages
+      yum: name={{item}}
+      with_items:
+        - ntp
+        - screen
+        - python-setuptools
+    - name: install pip
+      easy_install: name=pip
+    - name: copy screen.rc
+      copy: src=files/home/vagrant/.screenrc dest=/home/vagrant/.screenrc owner=vagrant mode=0644
+      sudo: no
+    - name: stop iptables
+      service: name=iptables state=stopped enabled=no
+    - name: install nginx yum repo
+      yum: name=http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm
+      tags: nginx_install
+    - name: install nginx
+      yum: name=nginx enablerepo=nginx state=installed
+      tags: nginx_install
+    - name: enable nginx
+      service: name=nginx enabled=yes
+      tags: nginx_install
+      notify:
+      - restart nginx
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
