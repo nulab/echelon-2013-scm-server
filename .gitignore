@@ -2,3 +2,4 @@
 ssh.config
 Gemfile.lock
 *.pyc
+spec/reports

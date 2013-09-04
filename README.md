@@ -27,12 +27,15 @@
   bundle
   rake spec
 
+or CI env
+
+  rake -t ci:setup:rspec spec
+
 ## Run ansible
 
 by vagrant
 
   vagrant provision
-
 
 by ansible
 
