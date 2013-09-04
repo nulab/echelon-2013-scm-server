@@ -6,7 +6,8 @@
       yum: name={{item}}
       with_items:
         - screen
-        - rsync        
+        - rsync
+        - git
         - python-setuptools
     - name: install required python tools
       easy_install: name={{item}}
