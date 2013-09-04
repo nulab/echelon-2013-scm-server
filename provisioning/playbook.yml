@@ -5,11 +5,14 @@
     - name: ensure default packages
       yum: name={{item}}
       with_items:
-        - ntp
         - screen
+        - rsync        
         - python-setuptools
-    - name: install pip
-      easy_install: name=pip
+    - name: install required python tools
+      easy_install: name={{item}}
+      with_items:
+        - pip
+        - supervisor
     - name: copy screen.rc
       copy: src=files/home/vagrant/.screenrc dest=/home/vagrant/.screenrc owner=vagrant mode=0644
       sudo: no
@@ -21,11 +24,34 @@
     - name: install nginx
       yum: name=nginx enablerepo=nginx state=installed
       tags: nginx_install
+      notify:
+      - restart nginx
     - name: enable nginx
       service: name=nginx enabled=yes
       tags: nginx_install
-      notify:
-      - restart nginx
+    - name: copy nginx conf
+      copy: src=files/etc/nginx/conf.d/default.conf dest=/etc/nginx/conf.d/default.conf backup=yes mode=644
+      notify: restart nginx
+    - name: create app directory
+      file: dest=app state=directory
+      sudo: no
+    - name: create supervisord related directory
+      file: dest=/etc/supervisord.d state=directory
+    - name: copy supervisord related files
+      copy: src=files/{{item.path}} dest=/{{item.path}} mode={{item.mode}}
+      with_items:
+        - { path: etc/init.d/supervisord, mode: "0755" }
+        - { path: etc/sysconfig/supervisord, mode: "0644" }
+        - { path: etc/supervisord.conf, mode: "0644" }
+      notify: restart supervisord
+    - name: copy app setting for supervisord
+      template: src=templates/etc/supervisord.d/todo.ini.j2 dest=/etc/supervisord.d/todo.ini mode=0644
+      notify: restart supervisord
+    - name: enable supervisord
+      service: name=supervisord enabled=yes
+      notify: restart supervisord
   handlers:
     - name: restart nginx
       service: name=nginx state=restarted
+    - name: restart supervisord
+      service: name=supervisord state=restarted

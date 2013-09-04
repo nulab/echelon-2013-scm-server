@@ -5,6 +5,7 @@
 * vagrant ( not installed by gem )
 * gem
 * bundler
+* fabric
 
 ## Setup
 
@@ -17,8 +18,22 @@
   vagrant up
   vagrant ssh
 
+## Generate ssh.config
+
+  vagrant ssh-config > ssh.config
+
 ## Run Serverspec Test
 
   bundle
   rake spec
 
+## Run ansible
+
+by vagrant
+
+  vagrant provision
+
+
+by ansible
+
+  ansible-playbook --private-key=<listed in ssh.config> provisioning/playbook.yml -i provisioning/ansible_hosts

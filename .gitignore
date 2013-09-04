@@ -1,3 +1,4 @@
 .vagrant*
 ssh.config
 Gemfile.lock
+*.pyc
