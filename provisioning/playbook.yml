@@ -35,6 +35,8 @@
     - name: create app directory
       file: dest=app state=directory
       sudo: no
+    - name: clone initial app
+      git: repo=https://github.com/nulab/echelon-2013-scm-webapp.git dest=app update=no
     - name: create supervisord related directory
       file: dest=/etc/supervisord.d state=directory
     - name: copy supervisord related files
