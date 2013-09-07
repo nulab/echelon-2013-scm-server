@@ -56,7 +56,7 @@ def adjust_path(path):
     Adjust path value for rsync
     """
     ret = path
-    if path[:-1] != '/':
+    if not path.endswith('/'):
         ret = path + '/'
 
     if path.find(' ') != -1:

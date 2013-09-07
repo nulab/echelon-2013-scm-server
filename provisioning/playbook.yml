@@ -38,6 +38,8 @@
       sudo: no
     - name: clone initial app
       git: repo=https://github.com/nulab/echelon-2013-scm-webapp.git dest=app update=no
+      sudo: no
+      ignore_errors: yes
     - name: create supervisord related directory
       file: dest=/etc/supervisord.d state=directory
     - name: copy supervisord related files
